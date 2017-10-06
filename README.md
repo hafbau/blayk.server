@@ -1,4 +1,4 @@
-# A realtime API skeleton to build up off
+# Blayk Server - An acceptance testing API
 
 # This project is in development!
 
