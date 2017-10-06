@@ -1,0 +1,60 @@
+{
+  "name": "blaykAPI",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serverModule.js",
+  "scripts": {
+    "debug": "node inspect index.js",
+    "start": "nodemon index.js",
+    "test": "mocha || true"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "chromedriver": "^2.31.0",
+    "dotenv": "^4.0.0",
+    "jsonwebtoken": "^7.4.1",
+    "kcors": "^2.2.1",
+    "koa": "^2.3.0",
+    "koa-body": "^2.3.0",
+    "koa-router": "^7.2.1",
+    "mongoose": "^4.11.1",
+    "morgan": "^1.8.2",
+    "phantomjs-prebuilt": "^2.1.14",
+    "selenium-webdriver": "^3.5.0",
+    "socket.io": "^2.0.3",
+    "util.promisify": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "chai-as-promised": "^7.1.1",
+    "koa-send": "^4.1.0",
+    "mocha": "^3.5.0",
+    "nodemon": "^1.11.0"
+  }, 
+  
+  "apps": [
+    {
+      "name": "blaykAPI",
+      "script": "./index.js",
+      "env": {
+        "COMMON_ENV_VAR": "true"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    }
+  ],
+  "deploy": {
+    "production": {
+      "user": "sb",
+      "host": "159.203.14.114",
+      "ref": "origin/master",
+      "repo": "git@github.com:hafbau/autoTest_api.git",
+      "path": "/home/sb/blaykAPI",
+      "post-deploy": "npm install && pm2 startOrGracefulReload package.json -env production"
+    }
+  }
+}
