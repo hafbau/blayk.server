@@ -16,9 +16,9 @@ async function runTestCase({ steps, io }) {
 
       // status of this run of the test case.
       // TODO: revise this logic for failed step but not terminated case run
-      // const status = result.pass ? index < steps.length - 1 ? "pending" : "done" : "failed"
+      const status = result.pass ? index < steps.length - 1 ? "pending" : "done" : "failed"
       // emits single step result
-      // io.emit(`${ctx.user.id}`, { type: 'STEP_RESULT', payload: { result, status } })
+      // io.emit(`to be determined here`, { type: 'STEP_RESULT', payload: { result, status } })
 
       results.push(result);
       return result;

@@ -55,7 +55,8 @@ module.exports = (db, decorate) => {
     if (this.steps) {
       // updates lastPassed, isPassing, lastRun      
     }
+    return next()
   })
-
-  return db.model('Case', Case);
+  const CaseModel = db.model('Case', Case);
+  return CaseModel;
 };

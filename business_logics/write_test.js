@@ -1,4 +1,5 @@
 const fs = require('fs');
+const media = require('media');
 const { convertToDataUrl } = require('../utils');
 
 const selenium = require("selenium-webdriver");
@@ -63,7 +64,10 @@ module.exports = async ({ driver, step }) => {
     }
 
     const file = await driver.takeScreenshot();
-    result.screenshot = await saveScreenshot({ file, saveAs: `screen_shots/${id ? id : ""}_step_${order}.png` });
+    const tempFile = await saveScreenshot({ file });
+    const uploadedFile = await media.upload(fs.createReadStream(tempFile));
+    
+    result.screenshot = uploadedFile.files[0]; // this is risky
     result.meta.imageDataUrl = convertToDataUrl({ data: file })
     return result;
   }
@@ -71,6 +75,7 @@ module.exports = async ({ driver, step }) => {
     result.pass = false;
     result.meta.error = err;
     result.meta.message = err.message
+    
     console.log("got error in writeTest =>", err)
     return result
   }
@@ -92,7 +97,7 @@ function locate({ target: { type, value}, driver}) {
   }
 }
 
-function saveScreenshot({ file, saveAs = `screen_shots/screenShot.png` }) {
+function saveScreenshot({ file, saveAs = `/tmp/screenShot.png` }) {
   console.log(`saving screenshot as ${saveAs}`)
   return new Promise((resolve, reject) => {
 
