@@ -3,9 +3,11 @@ const media = require('media');
 const { convertToDataUrl } = require('../utils');
 
 const selenium = require("selenium-webdriver");
-const By = selenium.By;
+// const By = selenium.By;
 const until = selenium.until;
 const TIMEOUT = 15000;
+
+const locate = require('./locate');
 
 module.exports = async ({ driver, step }) => {
   const { caseId, id, options, order, type, target } = step;
@@ -84,17 +86,6 @@ module.exports = async ({ driver, step }) => {
 function escapeValue(value) {
   // TODO
   return value
-}
-
-function locate({ target: { type, value}, driver}) {
-  switch (type) {
-    case 'css':
-      return driver.wait(until.elementLocated(By.css(value)), TIMEOUT)
-
-    default:
-      throw new Error(`Could not locate ${value}`)
-
-  }
 }
 
 function saveScreenshot({ file, saveAs = `/tmp/screenShot.png` }) {
