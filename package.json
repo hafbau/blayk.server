@@ -39,11 +39,13 @@
   "apps": [
     {
       "name": "blaykAPI",
-      "script": "./index.js",
+      "script": "index.js",
+      "instances": 2,
+      "exec_mode": "cluster",
       "env": {
-        "COMMON_ENV_VAR": "true"
+        "COMMON_VARIABLE": "true"
       },
-      "env_production": {
+     "env_production": {
         "NODE_ENV": "production"
       }
     }
@@ -55,7 +57,10 @@
       "ref": "origin/master",
       "repo": "git@github.com:hafbau/blayk.server.git",
       "path": "/home/sb/blaykAPI",
-      "post-deploy": "npm install && pm2 start package.json -env production"
+      "post-deploy": "npm install && pm2 startOrGracefulReload package.json --env production",
+      "env": {
+        "NODE_ENV": "production"
+      }
     }
   }
 }
