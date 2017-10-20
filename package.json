@@ -21,7 +21,7 @@
     "koa": "^2.3.0",
     "koa-body": "^2.3.0",
     "koa-router": "^7.2.1",
-    "media": "git+ssh://git@github.com:hafbau/media.git#3698c7541f90f323cf425a937f4fa756f966223f",
+    "media": "git+ssh://git@github.com:hafbau/media.git",
     "mongoose": "^4.11.1",
     "morgan": "^1.8.2",
     "phantomjs-prebuilt": "^2.1.14",
@@ -53,7 +53,7 @@
       "user": "sb",
       "host": "159.203.14.114",
       "ref": "origin/master",
-      "repo": "git@github.com:hafbau/autoTest_api.git",
+      "repo": "git@github.com:hafbau/blayk.server.git",
       "path": "/home/sb/blaykAPI",
       "post-deploy": "npm install && pm2 startOrGracefulReload package.json -env production"
     }
