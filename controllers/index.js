@@ -46,8 +46,8 @@ module.exports = (Suite, render) => {
         const { params: { _id } } = ctx;
         ctx.assert(_id, 400, 'You must select test to fetch');
 
-        const suite = await Case.findOne({ _id });
-        ctx.assert(suite, 400, 'Test case not found');
+        const suite = await Suite.findOne({ _id });
+        ctx.assert(suite, 400, 'Test suite not found');
         ctx.status = 200;
  
         return ctx.body = {
