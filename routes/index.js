@@ -3,11 +3,11 @@
 */
 module.exports = ({ controllers, middlewares: { ensureUser }, router }) => {
   router
-    .get('/tests', controllers.getAllCases)
-    .get('/tests/:_id', controllers.getCase)
-    .post('/tests', controllers.postCase)
-    .put('/tests/:_id', controllers.editCase)
-    .put('/tests/:_id/run', controllers.runCase)
+    .get('/tests', controllers.getAllSuites)
+    .get('/tests/:_id', controllers.getSuite)
+    .post('/tests', controllers.postSuite)
+    .put('/tests/:_id', controllers.editSuite)
+    .put('/tests/:suiteId/cases/:order/run', controllers.runCase)
 
   return router;
 }
