@@ -37,9 +37,28 @@ module.exports = (db, decorate) => {
     isPassing: { type: Boolean, default: false },
     
     // identity related
+    order: { type: Number },
     title: { type: String },
     suite: {},
     steps: [Step],
+    
+    // other options goes in meta
+    meta: {},
+    
+    // timestamps
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
+  });
+
+  const Suite = new Schema({
+    // run related
+    lastRun: { type: Date },
+    lastPassed: { type: Date },
+    isPassing: { type: Boolean, default: false },
+    
+    // identity related
+    title: { type: String },
+    cases: [Case],
     
     // other options goes in meta
     meta: {},
@@ -51,12 +70,12 @@ module.exports = (db, decorate) => {
   }, {});
 
   // hooks
-  Case.pre('save', function(next) {
-    if (this.steps) {
-      // updates lastPassed, isPassing, lastRun      
-    }
+  Suite.pre('save', function(next) {
+   console.log('Im saving')
     return next()
   })
-  const CaseModel = db.model('Case', Case);
-  return CaseModel;
+  // end of hooks
+
+  const SuiteModel = db.model('Suite', Suite);
+  return SuiteModel;
 };
