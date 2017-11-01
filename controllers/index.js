@@ -1,18 +1,18 @@
 const runTestSteps = require('../run_test');
 
-module.exports = (Case, render) => {
+module.exports = (Suite, render) => {
   
   return {
     // C - REATE
-    postCase: async (ctx, next) => {
+    postSuite: async (ctx, next) => {
       try {
         const { request, res } = ctx;
-        const testCase = await Case.create(request.body);
+        const suite = await Suite.create(request.body);
         
-        if (testCase) {
+        if (suite) {
           ctx.status = 200;
           ctx.body = {
-            testCase
+            suite: Object(suite)
           }
           return next()
         }
@@ -24,15 +24,15 @@ module.exports = (Case, render) => {
     },
 
     // R - EAD
-    getAllCases: async (ctx, next) => {
+    getAllSuites: async (ctx, next) => {
       try {
         const { req, res } = ctx;
-        const testCases = await Case.find();
-        ctx.assert(testCases && testCases.length, 400, 'No tests found');
+        const suites = await Suite.find();
+        ctx.assert(suites && suites.length, 400, 'No tests found');
         
         ctx.status = 200;
         return ctx.body = {
-          testCases
+          suites
         }
           
       }
@@ -41,21 +41,20 @@ module.exports = (Case, render) => {
       }
       
     },
-    getCase: async (ctx, next) => {
+    getSuite: async (ctx, next) => {
       try {
         const { params: { _id } } = ctx;
         ctx.assert(_id, 400, 'You must select test to fetch');
 
-        const testCase = await Case.findOne({ _id });
-        ctx.assert(testCase, 400, 'Test case not found');
+        const suite = await Case.findOne({ _id });
+        ctx.assert(suite, 400, 'Test case not found');
         ctx.status = 200;
  
         return ctx.body = {
-          testCase
+          suite
         }
           
       } catch(err) {
-        console.log('error in runCase controller', err)
         ctx.throw(500, err.message)
       }
     },
@@ -63,14 +62,19 @@ module.exports = (Case, render) => {
     // U - pdate
     runCase: async (ctx, next) => {
       try {
-        const { params: { _id }, io } = ctx;
-        ctx.assert(_id, 400, 'You must select the test to run');
+        const { params: { suiteId, order }, io } = ctx;
+        ctx.assert(suiteId, 400, 'You must select the test to run');
 
-        const caseToUpdate = await Case.findOne({ _id });
+        const suite = await Suite.findOne({ _id: suiteId });
+        ctx.assert(suite, 400, 'Test suite not found');
+        
+        const caseToUpdateId = suite.cases.findIndex(testCase => testCase.order == order);
+        const caseToUpdate = suite.cases[caseToUpdateId];
         ctx.assert(caseToUpdate, 400, 'Test case not found');
         
         caseToUpdate.steps = Object.assign([], caseToUpdate.steps, await runTestSteps({ steps: caseToUpdate.steps, io }));
-        await caseToUpdate.save();
+        suite.cases[caseToUpdateId] = caseToUpdate;
+        await suite.save();
 
         ctx.status = 200;
         return ctx.body = {
@@ -78,31 +82,29 @@ module.exports = (Case, render) => {
         }
 
       } catch(err) {
-        console.log('error in runCase controller', err)
         ctx.throw(500, err.message)
       }
     },
       
-    editCase: async (ctx, next) => {
+    editSuite: async (ctx, next) => {
       try {
         const { params: { _id }, request } = ctx;
         ctx.assert(_id, 400, 'You must select test to edit');
 
-        const testCase = await Case.update(
+        const suite = await Suite.update(
           { _id },
           { $set: request.body },
           { new: true }
         );
         
-        ctx.assert(testCase, 400, 'Updated test case not found');
+        ctx.assert(suite, 400, 'Updated test suite not found');
         ctx.status = 200;
 
         return ctx.body = {
-          testCase
+          suite
         }
 
       } catch (err) {
-        console.log('error in runCase controller', err)
         ctx.throw(500, err.message)
       }
     }
