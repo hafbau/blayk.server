@@ -1,4 +1,5 @@
 const runTestSteps = require('../run_test');
+const mongoose = require('mongoose');
 
 module.exports = (Suite, render) => {
   
@@ -45,8 +46,9 @@ module.exports = (Suite, render) => {
       try {
         const { params: { _id } } = ctx;
         ctx.assert(_id, 400, 'You must select test to fetch');
+        // not using casting to ObjectId here for no reason
+        const suite = (await Suite.find({ _id }))[0];
 
-        const suite = await Suite.findOne({ _id });
         ctx.assert(suite, 400, 'Test suite not found');
         ctx.status = 200;
  
@@ -65,7 +67,9 @@ module.exports = (Suite, render) => {
         const { params: { suiteId, order }, io } = ctx;
         ctx.assert(suiteId, 400, 'You must select the test to run');
 
-        const suite = await Suite.findOne({ _id: suiteId });
+        const suite = await Suite.findOne({
+              _id: mongoose.Types.ObjectId(suiteId)
+              });
         ctx.assert(suite, 400, 'Test suite not found');
         
         const caseToUpdateId = suite.cases.findIndex(testCase => testCase.order == order);
@@ -90,9 +94,9 @@ module.exports = (Suite, render) => {
       try {
         const { params: { _id }, request } = ctx;
         ctx.assert(_id, 400, 'You must select test to edit');
-
+        
         const suite = await Suite.update(
-          { _id },
+          { _id: mongoose.Types.ObjectId(_id) },
           { $set: request.body },
           { new: true }
         );

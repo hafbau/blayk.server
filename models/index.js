@@ -71,7 +71,17 @@ module.exports = (db, decorate) => {
 
   // hooks
   Suite.pre('save', function(next) {
-   console.log('Im saving')
+    console.log('Im saving', this.title, 'id', this._id)
+    const lastCase = this.cases[this.cases.length - 1];
+   
+    if (!lastCase.suite) {
+      lastCase.suite = {
+        id: this._id,
+        title: this.title
+      }
+
+      this.cases[this.cases.length - 1] = lastCase;
+    }
     return next()
   })
   // end of hooks
