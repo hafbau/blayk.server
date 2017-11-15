@@ -13,9 +13,10 @@ const app = new Koa();
 const config = require('./config');
 const { modelDecorator } = require('./utils');
 const db = require('./db')(config.db);
-
 const models = require('./models')(db, modelDecorator);
-const middlewares = require('./middlewares')(models);
+
+const scheduler = require('./business_logics/scheduler')(config.db, models);
+const middlewares = require('./middlewares')(models, scheduler);
 const controllers = require('./controllers')(models, render);
 const combinedRoutes = require('./routes')({controllers, middlewares, router});
 
@@ -32,7 +33,7 @@ const combinedRoutes = require('./routes')({controllers, middlewares, router});
 app.use(middlewares.cors);
 
 // set up req.body
-app.use(bodyParser());
+app.use(bodyParser({ jsonLimit: '50mb'}));
 
 // middleware to log requests to the console.
 app.use(async(ctx, next) => {

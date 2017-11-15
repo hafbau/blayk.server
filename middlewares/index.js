@@ -1,10 +1,10 @@
 const { getExports } = require('../utils')
 
-module.exports = (models) => {
+module.exports = (models, scheduler) => {
   const toExport = getExports({
     dir: __dirname,
     currentFile: __filename
-  }, models);
+  }, models, scheduler);
 
   return toExport;
 };

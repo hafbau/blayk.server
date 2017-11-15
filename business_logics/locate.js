@@ -8,7 +8,7 @@ const upper = (string) => `translate(${string}, 'abcdefghijklmnopqrstuvwxyz', 'A
     
 module.exports = function locate({ target: { type, value }, driver }) {
     try {
-        value = value.toLowerCase();
+        value = value.toLowerCase() || 'body';
         switch (type) {
             case 'id':
                 return driver.wait(until.elementLocated(By.id(value)), TIMEOUT);
@@ -24,11 +24,12 @@ module.exports = function locate({ target: { type, value }, driver }) {
             
             default:
                 const XPATH = `//*[contains(${lower('@class')}, '${value}') or contains(${lower('text()')}, '${value}') or ${lower('@placeholder')}='${value}' or ${lower('@name')
-        }='${value}' or ${lower('@id')}='${value}']`
+                    }='${value}' or ${lower('@id')}='${value}' or contains(${lower('name()')}, '${value}')]`
                 return driver.wait(until.elementLocated(By.xpath(XPATH)), TIMEOUT)
 
         }
     } catch (err) {
+        console.log('about to throw', err)
         throw new Error(`Could not locate ${value}`)
     }
 }

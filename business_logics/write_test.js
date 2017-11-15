@@ -5,9 +5,11 @@ const { convertToDataUrl } = require('../utils');
 const selenium = require("selenium-webdriver");
 // const By = selenium.By;
 const until = selenium.until;
-const TIMEOUT = 15000;
+const TIMEOUT = 5000;
 
 const locate = require('./locate');
+
+media.init({ apiUrl: 'http://localhost:4002' });
 
 module.exports = async ({ driver, step }) => {
   const { caseId, id, options, order, type, target } = step;
@@ -45,7 +47,7 @@ module.exports = async ({ driver, step }) => {
             until.elementTextContains(
               locate({ target, driver }), escapeValue(options.value)
             ),
-            TIMEOUT / 3//striking a balance of wait time
+            TIMEOUT
           )
           .then(el => {
             result.pass = false;

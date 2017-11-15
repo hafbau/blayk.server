@@ -76,7 +76,9 @@ module.exports = (Suite, render) => {
         const caseToUpdate = suite.cases[caseToUpdateId];
         ctx.assert(caseToUpdate, 400, 'Test case not found');
         
+        caseToUpdate.meta.runType = 'immediate';
         caseToUpdate.steps = Object.assign([], caseToUpdate.steps, await runTestSteps({ steps: caseToUpdate.steps, io }));
+
         suite.cases[caseToUpdateId] = caseToUpdate;
         await suite.save();
 

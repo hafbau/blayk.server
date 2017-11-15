@@ -43,12 +43,12 @@ module.exports = (db, decorate) => {
     steps: [Step],
     
     // other options goes in meta
-    meta: {},
+    meta: { type: Schema.Types.Mixed, default: {}},
     
     // timestamps
     createdAt: { type: Date, default: Date.now() },
     updatedAt: { type: Date, default: Date.now() },
-  });
+  }, { minimize: false });
 
   const Suite = new Schema({
     // run related
@@ -71,7 +71,6 @@ module.exports = (db, decorate) => {
 
   // hooks
   Suite.pre('save', function(next) {
-    console.log('Im saving', this.title, 'id', this._id)
     const lastCase = this.cases[this.cases.length - 1];
    
     if (!lastCase.suite) {

@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "agenda": "^1.0.3",
     "base64-image-upload": "^1.1.4",
     "bcrypt": "^1.0.2",
     "chromedriver": "^2.31.0",
@@ -46,7 +47,7 @@
       "env": {
         "COMMON_VARIABLE": "true"
       },
-     "env_production": {
+      "env_production": {
         "NODE_ENV": "production"
       }
     }
