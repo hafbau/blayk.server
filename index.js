@@ -49,13 +49,19 @@ app.use(async(ctx, next) => {
       ctx.type = 'json';
       await next();
     } catch (err) {
-      console.log("erro handlin", err)
+      console.log("app error handling", err)
       ctx.status = err.status || 500;
       ctx.body = {
           error: err.message
       };
     }
 });
+
+// serving static files from public
+app.use(async (ctx, next) => {
+  if (!ctx.path.includes('/img/')) return next();
+  await render(ctx, ctx.path, { root: __dirname + '/public' });
+})
 
 // attaching user to context if token checks out
 app.use(middlewares.ensureUser)

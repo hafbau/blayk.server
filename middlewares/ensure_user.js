@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const auth = require('auth');
 
 module.exports = ({ userModel }) => {
   return async (ctx, next) => {

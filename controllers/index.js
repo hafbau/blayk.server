@@ -1,5 +1,6 @@
-const runTestSteps = require('../run_test');
 const mongoose = require('mongoose');
+const runTestSteps = require('../run_test');
+const slack = require('../integrations/slack');
 
 module.exports = (Suite, render) => {
   
@@ -76,11 +77,17 @@ module.exports = (Suite, render) => {
         const caseToUpdate = suite.cases[caseToUpdateId];
         ctx.assert(caseToUpdate, 400, 'Test case not found');
         
-        caseToUpdate.meta.runType = 'immediate';
+        const meta = caseToUpdate.meta || {};
+        meta.runType = 'immediate';
+        meta.runAt = Date.now();
+
+        caseToUpdate.meta = meta;
+        caseToUpdate.lastRun = Date.now();
         caseToUpdate.steps = Object.assign([], caseToUpdate.steps, await runTestSteps({ steps: caseToUpdate.steps, io }));
 
         suite.cases[caseToUpdateId] = caseToUpdate;
         await suite.save();
+        await slack(caseToUpdate);
 
         ctx.status = 200;
         return ctx.body = {
@@ -93,26 +100,26 @@ module.exports = (Suite, render) => {
     },
       
     editSuite: async (ctx, next) => {
-      try {
-        const { params: { _id }, request } = ctx;
-        ctx.assert(_id, 400, 'You must select test to edit');
-        
-        const suite = await Suite.update(
-          { _id: mongoose.Types.ObjectId(_id) },
-          { $set: request.body },
-          { new: true }
-        );
-        
-        ctx.assert(suite, 400, 'Updated test suite not found');
-        ctx.status = 200;
+        try {
+            const { params: { _id }, request } = ctx;
+            ctx.assert(_id, 400, 'You must select test to edit');
+            
+            const suite = await Suite.update(
+                { _id: mongoose.Types.ObjectId(_id) },
+                { $set: request.body },
+                { new: true }
+            );
+            
+            ctx.assert(suite, 400, 'Updated test suite not found');
+            ctx.status = 200;
 
-        return ctx.body = {
-          suite
+            return ctx.body = {
+                suite
+            }
+
+        } catch (err) {
+            ctx.throw(500, err.message)
         }
-
-      } catch (err) {
-        ctx.throw(500, err.message)
-      }
     }
 
   } // returned Object

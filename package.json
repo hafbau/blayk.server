@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "agenda": "^1.0.3",
+    "auth": "git+ssh://git@github.com:hafbau/auth.git#fdb75b61b9294e85d50a572c446243463dbb8673",
     "base64-image-upload": "^1.1.4",
     "bcrypt": "^1.0.2",
     "chromedriver": "^2.31.0",
@@ -29,6 +30,7 @@
     "phantomjs-prebuilt": "^2.1.14",
     "selenium-webdriver": "^3.5.0",
     "socket.io": "^2.0.3",
+    "superagent": "^3.8.1",
     "util.promisify": "^1.0.0"
   },
   "devDependencies": {

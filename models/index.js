@@ -48,9 +48,10 @@ module.exports = (db, decorate) => {
     // timestamps
     createdAt: { type: Date, default: Date.now() },
     updatedAt: { type: Date, default: Date.now() },
-  }, { minimize: false });
+  });
 
   const Suite = new Schema({
+    userId: { type: String, required: true },
     // run related
     lastRun: { type: Date },
     lastPassed: { type: Date },

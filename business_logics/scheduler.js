@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 
 const assert = require('assert');
 const runTestSteps = require('../run_test');
+const slack = require('../integrations/slack');
+
 
 module.exports = async (db, Suite) => {
     agenda
@@ -33,12 +35,19 @@ async function runCase(job, done, Suite) {
         const caseToUpdateId = suite.cases.findIndex(testCase => testCase.order == order);
         const caseToUpdate = suite.cases[caseToUpdateId];
         assert(caseToUpdate, 400, 'Test case not found');
-    
-        caseToUpdate.meta.runType = 'cron';
+
+        const meta = caseToUpdate.meta || {};
+        meta.runType = 'scheduled';
+        meta.runAt = Date.now();
+
+        caseToUpdate.meta = meta;
         caseToUpdate.steps = Object.assign([], caseToUpdate.steps, await runTestSteps({ steps: caseToUpdate.steps }));
 
         suite.cases[caseToUpdateId] = caseToUpdate;
         await suite.save();
+
+        // trigger integrated services
+        slack(caseToUpdate.steps);
     
     } catch (err) {
         throw (500, err.message)
