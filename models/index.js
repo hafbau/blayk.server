@@ -32,15 +32,16 @@ module.exports = (db, decorate) => {
 
   const Case = new Schema({
     // run related
+    isPassing: { type: Boolean, default: false },
+    job: {},
     lastRun: { type: Date },
     lastPassed: { type: Date },
-    isPassing: { type: Boolean, default: false },
     
     // identity related
     order: { type: Number },
-    title: { type: String },
     suite: {},
     steps: [Step],
+    title: { type: String },
     
     // other options goes in meta
     meta: { type: Schema.Types.Mixed, default: {}},
@@ -62,7 +63,7 @@ module.exports = (db, decorate) => {
     cases: [Case],
     
     // other options goes in meta
-    meta: {},
+    meta: { type: Schema.Types.Mixed, default: {} },
     
     // timestamps
     createdAt: { type: Date, default: Date.now() },

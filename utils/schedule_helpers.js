@@ -4,9 +4,9 @@ module.exports = {
     pluralize
 }
 
-function cancelJobIfExist({ agenda, suiteId, order }) {
+function cancelJobIfExist({ scheduler, suiteId, order }) {
     return new Promise((resolve, reject) => {
-        agenda.cancel({
+        scheduler.cancel({
             'name': 'runCase',
             'data.suiteId': suiteId,
             'data.order': order
@@ -19,10 +19,10 @@ function cancelJobIfExist({ agenda, suiteId, order }) {
     })
 };
 
-function convertToMinutes({ schMinutes, schHours, schDays }) {
+function convertToMinutes({ schMins, schHrs, schDays }) {
     return (
-        Number(schMinutes) +
-        Number(schHours) * 60 +
+        Number(schMins) +
+        Number(schHrs) * 60 +
         Number(schDays) * 60 * 24
     )
 }

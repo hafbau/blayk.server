@@ -47,7 +47,8 @@ async function runCase(job, done, Suite) {
         await suite.save();
 
         // trigger integrated services
-        slack(caseToUpdate.steps);
+        const slackEndpoint = suite.meta && suite.meta.slack;
+        await slack(caseToUpdate, slackEndpoint);
     
     } catch (err) {
         throw (500, err.message)

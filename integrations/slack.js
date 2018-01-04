@@ -10,7 +10,11 @@ const createText = (caseRan) => {
 }
 
 // app link for jira
-module.exports = (caseRan, userSlackEndPoint = 'https://hooks.slack.com/services/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') => {
+module.exports = (caseRan, userSlackEndPoint) => {
+    // checks userSlackEndPoint
+    // TODO: checks for valid urls
+    if (!userSlackEndPoint) return;
+    
     return fetch.post(userSlackEndPoint)
         .send({
             icon_url: 'http://localhost:4000/img/favicon.png',
