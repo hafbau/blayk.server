@@ -1,3 +1,6 @@
+// Services require
+const authServer = require('authserver');
+
 const Koa = require('koa');
 const bodyParser = require('koa-body');
 const jwt = require('jsonwebtoken');
@@ -100,7 +103,8 @@ io.on('connection', (socket) => {
 // start the server ======
 // =======================
 if (!module.parent) {
-  server.listen(4000, () => console.log("listening on port 4000"));
+  server.listen(4000, () => console.log("Blayk API Server listening on port 4000"));
+  server.listen(4001, () => console.log("Auth Server listening on port 4001"));
 }
 
 module.exports = server;

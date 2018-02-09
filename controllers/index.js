@@ -88,8 +88,8 @@ module.exports = (Suite, render) => {
         suite.cases[caseToUpdateId] = caseToUpdate;
         await suite.save();
         // trigger integrated services
-        const slackEndpoint = suite.meta && suite.meta.slack;
-        await slack(caseToUpdate, slackEndpoint);
+        // const slackEndpoint = suite.meta && suite.meta.slack;
+        // await slack(caseToUpdate, slackEndpoint);
 
         ctx.status = 200;
         return ctx.body = {
