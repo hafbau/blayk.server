@@ -1,5 +1,6 @@
 // Services require
-const authServer = require('authserver');
+const { authserver } = require('authserver');
+const { mediaserver } = require('mediaserver');
 
 const Koa = require('koa');
 const bodyParser = require('koa-body');
@@ -43,7 +44,7 @@ app.use(async(ctx, next) => {
     const start = new Date();
     await next();
     const ms = new Date() - start;
-    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+  console.log(`Blayk API => ${ctx.method} ${ctx.url} -  ${ctx.status} ${ms}ms`);
 });
 
 //error handling middleware
@@ -52,7 +53,7 @@ app.use(async(ctx, next) => {
       ctx.type = 'json';
       await next();
     } catch (err) {
-      console.log("app error handling", err)
+      console.log("Blayk API error handling", err.message)
       ctx.status = err.status || 500;
       ctx.body = {
           error: err.message
@@ -104,7 +105,8 @@ io.on('connection', (socket) => {
 // =======================
 if (!module.parent) {
   server.listen(4000, () => console.log("Blayk API Server listening on port 4000"));
-  server.listen(4001, () => console.log("Auth Server listening on port 4001"));
+  authserver.listen(4001, () => console.log("Auth Server listening on port 4001"));
+  mediaserver.listen(4002, () => console.log("Media Server listening on port 4002"));
 }
 
 module.exports = server;

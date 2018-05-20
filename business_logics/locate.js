@@ -7,8 +7,10 @@ const lower = (string) => `translate(${string}, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'a
 const upper = (string) => `translate(${string}, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')`
     
 module.exports = function locate({ target: { type, value }, driver }) {
+    console.log('locating be', value)
     try {
-        value = value.toLowerCase() || 'body';
+        value = (value && value.toLowerCase()) || 'body';
+        console.log('locating', value)
         switch (type) {
             case 'id':
                 return driver.wait(until.elementLocated(By.id(value)), TIMEOUT);

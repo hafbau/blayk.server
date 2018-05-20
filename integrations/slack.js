@@ -9,7 +9,7 @@ const createText = (caseRan) => {
     return 'noop!'
 }
 
-// app link for jira
+// app link for slack
 module.exports = (caseRan, userSlackEndPoint) => {
     // checks userSlackEndPoint
     // TODO: checks for valid urls

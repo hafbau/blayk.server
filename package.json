@@ -7,6 +7,7 @@
     "prod-deploy": "pm2 deploy package.json production",
     "debug": "node inspect index.js",
     "start": "node index.js",
+    "watch": "nodemon -L index.js",
     "test": "mocha || true"
   },
   "keywords": [],
@@ -14,8 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "agenda": "^1.0.3",
-    "auth": "git+ssh://git@github.com:hafbau/auth.git#fdb75b61b9294e85d50a572c446243463dbb8673",
-    "authserver": "git+ssh://git@github.com:hafbau/auth.server.git",
+    "auth": "git+ssh://git@github.com/hafbau/auth.git#fdb75b61b9294e85d50a572c446243463dbb8673",
+    "authserver": "git+ssh://git@github.com/hafbau/authserver.git",
     "base64-image-upload": "^1.1.4",
     "bcrypt": "^1.0.2",
     "chromedriver": "^2.31.0",
@@ -25,7 +26,8 @@
     "koa": "^2.3.0",
     "koa-body": "^2.3.0",
     "koa-router": "^7.2.1",
-    "media": "git+ssh://git@github.com:hafbau/media.git",
+    "media": "git+ssh://git@github.com/hafbau/media.git",
+    "mediaserver": "git+ssh://git@github.com/hafbau/media.server.git",
     "mongoose": "^4.11.1",
     "morgan": "^1.8.2",
     "phantomjs-prebuilt": "^2.1.14",

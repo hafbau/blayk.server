@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const runTestSteps = require('../run_test');
 const slack = require('../integrations/slack');
+const jira = require('../integrations/jira');
 
 module.exports = (Suite, render) => {
   
@@ -10,14 +11,13 @@ module.exports = (Suite, render) => {
       try {
         const { request, res } = ctx;
         const suite = await Suite.create(request.body);
+        ctx.assert(suite, 400, 'Unable to create suite')
+        ctx.status = 200;
         
-        if (suite) {
-          ctx.status = 200;
-          ctx.body = {
-            suite: Object(suite)
-          }
-          return next()
+        ctx.body = {
+          suite: Object(suite)
         }
+        return next()
       }
       catch (err) {
         ctx.status = ctx.status || 500;
@@ -38,8 +38,8 @@ module.exports = (Suite, render) => {
         }
           
       }
-      catch(err) {
-        if (err.message !== 'No tests found') return ctx.throw(500)
+      catch (err) {
+        if (err.message !== 'No tests found') return ctx.throw(ctx.status || 500)
       }
       
     },
@@ -57,8 +57,8 @@ module.exports = (Suite, render) => {
           suite
         }
           
-      } catch(err) {
-        ctx.throw(500, err.message)
+      } catch (err) {
+        ctx.throw(ctx.status || 500, err.message)
       }
     },
     
@@ -69,8 +69,8 @@ module.exports = (Suite, render) => {
         ctx.assert(suiteId, 400, 'You must select the test to run');
 
         const suite = await Suite.findOne({
-              _id: mongoose.Types.ObjectId(suiteId)
-              });
+          _id: mongoose.Types.ObjectId(suiteId)
+        });
         ctx.assert(suite, 400, 'Test suite not found');
         
         const caseToUpdateId = suite.cases.findIndex(testCase => testCase.order == order);
@@ -96,33 +96,67 @@ module.exports = (Suite, render) => {
           testCase: caseToUpdate
         }
 
-      } catch(err) {
-        ctx.throw(500, err.message)
+      } catch (err) {
+        ctx.throw(ctx.status || 500, err.message)
       }
     },
       
     editSuite: async (ctx, next) => {
-        try {
-            const { params: { _id }, request } = ctx;
-            ctx.assert(_id, 400, 'You must select test to edit');
+      try {
+        const { params: { _id }, request } = ctx;
+        ctx.assert(_id, 400, 'You must select test to edit');
             
-            const suite = await Suite.update(
-                { _id: mongoose.Types.ObjectId(_id) },
-                { $set: request.body },
-                { new: true }
-            );
-            
-            ctx.assert(suite, 400, 'Updated test suite not found');
-            ctx.status = 200;
+        const suite = await Suite.findByIdAndUpdate(
+          mongoose.Types.ObjectId(_id),
+          { $set: request.body },
+          { new: true }
+        );
+        ctx.assert(suite, 400, 'Updated test suite not found');
+        ctx.status = 200;
 
-            return ctx.body = {
-                suite
-            }
-
-        } catch (err) {
-            ctx.throw(500, err.message)
+        return ctx.body = {
+          suite
         }
-    }
 
+      } catch (err) {
+        ctx.throw(ctx.status || 500, err.message)
+      }
+    },
+
+    saveIssue: async (ctx, next) => {
+        try {
+            const { request: { body } } = ctx;
+            let jiraResponse = await jira(body)
+            ctx.status = 200;
+          
+            if (typeof jiraResponse == 'string') jiraResponse = JSON.parse(jiraResponse)
+            return ctx.body = { success: 'dunno', jiraResponse };
+        } catch (err) {
+            console.log('error in saveIssue control', err)
+            ctx.throw(ctx.status || 500, err.message)
+        }
+    },
+
+    // D - estroy
+    deleteSuite: async (ctx, next) => {
+      try {
+        const { params: { _id }, request } = ctx;
+        ctx.assert(_id, 400, 'You must select test to delete');
+        
+        const suite = await Suite.findOneAndRemove(
+          { _id: mongoose.Types.ObjectId(_id) },
+          { single: true }
+        );
+        // ctx.assert(suite, 400, 'Updated test suite not found');
+        ctx.status = 200;
+
+        return ctx.body = {
+          success: true
+        }
+
+      } catch (err) {
+        ctx.throw(ctx.status || 500, err.message)
+      }
+    }
   } // returned Object
 } // module.exports

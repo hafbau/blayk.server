@@ -7,10 +7,12 @@ module.exports = ({ controllers, middlewares: { ensureUser, jobs }, router }) =>
     .get('/tests/:_id', controllers.getSuite)
     .post('/tests', controllers.postSuite)
     .put('/tests/:_id', controllers.editSuite)
+    .delete('/tests/:_id', controllers.deleteSuite)
 
     .put('/tests/:suiteId/cases/:order/run', controllers.runCase)
-  
     .post('/scheduleTest/:suiteId/cases/:order', jobs.postCaseJob)
+    .post('/saveIssue', controllers.saveIssue)
+  
 
   return router;
 }

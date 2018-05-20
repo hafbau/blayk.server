@@ -69,9 +69,8 @@ module.exports = async ({ driver, step }) => {
 
     const file = await driver.takeScreenshot();
     const tempFile = await saveScreenshot({ file });
-    const uploadedFile = await media.upload(fs.createReadStream(tempFile));
-    
-    result.screenshot = uploadedFile.files[0]; // this is risky
+    result.screenshot = await media.upload(fs.createReadStream(tempFile));
+  
     result.meta.imageDataUrl = convertToDataUrl({ data: file })
     return result;
   }
